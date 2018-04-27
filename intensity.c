@@ -82,8 +82,6 @@ void choose_discards() {
 	int discardTwo = cardArray[8];
 	int discardThree = cardArray[9];
 
-    // NOTE: THE PROVIDED CODE DOES NOT MAKE A LEGAL MOVE. YOU MUST CHANGE IT TO
-    // DISCARD CARDS FROM YOUR HAND.
     printf("%d %d %d\n", discardOne, discardTwo, discardThree);
 
 }
@@ -215,10 +213,6 @@ void choose_card_to_play(void) {
 	        e++;
         }
     }
-    
-    
-    // NOTE: THE PROVIDED CODE DOES NOT MAKE A LEGAL MOVE. YOU MUST CHANGE IT TO
-    // PLAY A CARD FROM YOUR HAND.
     
     printf("%d\n", cardToPlay);
 
