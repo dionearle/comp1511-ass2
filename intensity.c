@@ -55,8 +55,6 @@ void checkLegalRange(int cardsArray[N_CARDS_PLAYED_MAX],
 int *minValue, int *maxValue);
 
 
-// You should not need to change this main function
-
 int main(void) {
 
     int which_action = 0;
@@ -392,14 +390,187 @@ void choose_card_to_play(void) {
 }
 
 
-// ADD A COMMENT HERE EXPLAINING YOUR OVERALL TESTING STRATEGY
+// Overall testing strategy
 
 void run_unit_tests(void) {
-    //Insert assert statements here
+    
+    //Testing the discard aspect of the game
+    
+    //Checking how many cards are in each range to discard
+    
+    // A standard set of cards with different amounts for each range
+    int array1[N_CARDS_INITIAL_HAND] = {10, 11, 16, 24, 25, 28, 29, 39, 42, 49};
+    
+    int range10 = 0;
+    int range20 = 0;
+    int range30 = 0;
+    int range40 = 0;
+
+    myCardsRange(array1, N_CARDS_INITIAL_HAND, &range10, &range20, &range30, &range40);
+    assert(range10 == 3);
+    assert(range20 == 4);
+    assert(range30 == 1);
+    assert(range40 == 2);
+
+    // A standard set of cards with no cards in a certain range
+    int array2[N_CARDS_INITIAL_HAND] = {10, 12, 16, 19, 24, 25, 28, 29, 31, 33};
+    
+    range10 = 0;
+    range20 = 0;
+    range30 = 0;
+    range40 = 0;
+    
+    myCardsRange(array2, N_CARDS_INITIAL_HAND, &range10, &range20, &range30, &range40); 
+    assert(range10 == 4);
+    assert(range20 == 4);
+    assert(range30 == 2);
+    assert(range40 == 0);
+
+    // A standard set of cards with all cards in the same range
+    int array3[N_CARDS_INITIAL_HAND] = {10, 11, 12, 13, 14, 15, 16, 17, 18};
+    
+    range10 = 0;
+    range20 = 0;
+    range30 = 0;
+    range40 = 0;
+    
+    myCardsRange(array3, N_CARDS_INITIAL_HAND, &range10, &range20, &range30, &range40); 
+    assert(range10 == 10);
+    assert(range20 == 0);
+    assert(range30 == 0);
+    assert(range40 == 0);
+    
+    
+    // Checking the most suitable cards are discarded
+    
+    // If there are two cards with the same ending digit that are being chosen to discard,
+    // the player should favour discarding cards that they have more of in that range
+    int array4[N_CARDS_INITIAL_HAND] = {12, 14, 18, 19, 23, 28, 29, 30, 34, 45};
+    int discardArray1[N_CARDS_DISCARDED] = {19, 29, 18};
+    
+    range10 = 0;
+    range20 = 0;
+    range30 = 0;
+    range40 = 0;
+    myCardsRange(array4, N_CARDS_INITIAL_HAND, &range10, &range20, &range30, &range40);
+    
+    int j = 5;
+    int d = 2;
+    int chosen = 0;
+
+    compareDiscard(j,d,array4, discardArray1, &chosen, &range10, &range20, &range40);
+    assert(discardArray1[d] == 18);
+    
+    
+    // Another example of this, yet the new card is found to have more in that range,
+    // so the value changes
+    int array5[N_CARDS_INITIAL_HAND] = {12, 18, 22, 23, 28, 29, 30, 34, 42, 49};
+    int discardArray2[N_CARDS_DISCARDED] = {49, 29, 18};
+    
+    range10 = 0;
+    range20 = 0;
+    range30 = 0;
+    range40 = 0;
+    myCardsRange(array5, N_CARDS_INITIAL_HAND, &range10, &range20, &range30, &range40);
+    
+    j = 4;
+    d = 2;
+    chosen = 0;
+
+    compareDiscard(j,d,array5, discardArray2, &chosen, &range10, &range20, &range40);
+    assert(discardArray2[d] == 28);
+
+    
+    //Testing the play card aspect of the game
+    
+    //Checking to see whether penalty cards have been played in previous rounds
+    
+    // Testing when there have been no calfs or buffalos previously played
+    int previousArray1[8] = {11, 16, 24, 27, 29, 41, 46, 49};
+    
+    int calfPlayed = 0;
+    int buffaloPlayed = 0;
+    int numPrevCardsPlayed = 8;
+    
+    checkPrevRound(numPrevCardsPlayed, previousArray1, &calfPlayed, &buffaloPlayed);
+    assert(buffaloPlayed == 0);
+    assert(calfPlayed == 0);
+    
+    // Testing when there has been a calf played in previous rounds
+    int previousArray2[4] = {14, 27, 31, 40};
+    
+    calfPlayed = 0;
+    buffaloPlayed = 0;
+    numPrevCardsPlayed = 4;
+    
+    checkPrevRound(numPrevCardsPlayed, previousArray2, &calfPlayed, &buffaloPlayed);
+    assert(buffaloPlayed == 0);
+    assert(calfPlayed == 1);
+    
+    // Testing when there has been a buffalo played in previous rounds
+
+    int previousArray3[4] = {11, 24, 44, 47};
+    
+    calfPlayed = 0;
+    buffaloPlayed = 0;
+    numPrevCardsPlayed = 4;
+    
+    checkPrevRound(numPrevCardsPlayed, previousArray3, &calfPlayed, &buffaloPlayed);
+    assert(buffaloPlayed == 1);
+    assert(calfPlayed == 0);
+    
+    // Testing when there has been a combination of both played
+
+    int previousArray4[12] = {15, 17, 26, 27, 29, 30, 34, 36, 39, 40, 47, 49};
+    
+    calfPlayed = 0;
+    buffaloPlayed = 0;
+    numPrevCardsPlayed = 12;
+    
+    checkPrevRound(numPrevCardsPlayed, previousArray4, &calfPlayed, &buffaloPlayed);
+    assert(buffaloPlayed == 1);
+    assert(calfPlayed == 1);
+    
+    
+    // Testing whether any penalty points have been played this current round
+    
+    // When there has not been a penalty played
+    int playedArray1[3] = {13, 16, 17};
+    
+    int numCardsPlayed = 3;
+    
+    int penaltyPlayed = 0;
+    penaltyPlayed = checkPenalty(numCardsPlayed, playedArray1);
+    
+    assert(penaltyPlayed == 0);
+    
+    
+    // When there has been a buffalo played
+    int playedArray2[2] = {42, 47};
+    
+    numCardsPlayed = 2;
+    
+    penaltyPlayed = 0;
+    penaltyPlayed = checkPenalty(numCardsPlayed, playedArray2);
+    
+    assert(penaltyPlayed == 1);
+    
+    // When there has been a calf played
+    int playedArray3[3] = {22, 31, 39};
+    
+    numCardsPlayed = 3;
+    
+    penaltyPlayed = 0;
+    penaltyPlayed = checkPenalty(numCardsPlayed, playedArray3);
+    
+    assert(penaltyPlayed == 1);
+    
 }
 
 
-// ADD YOUR FUNCTIONS HERE
+
+
+// Functions
 
 void myCardsRange(int array[N_CARDS_INITIAL_HAND], int cards, int *range10, 
 int *range20, int *range30, int *range40) {
