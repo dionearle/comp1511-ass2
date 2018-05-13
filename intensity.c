@@ -390,7 +390,18 @@ void choose_card_to_play(void) {
 }
 
 
-// Overall testing strategy
+// My overall testing strategy was to first test the discarding aspect of the
+// game, and then the play card aspect. As I had written several smaller functions
+// that would be used within these two main parts of the program, I would be
+// testing that they did what I intended them to do, rather than testing the
+// entire discard / play card functions, as this was far too difficult.
+
+// Examples of these functions being tested include checking how many cards I have
+// in each card range (number of 10's, 20's etc), comparing the cards in my hand
+// and choosing the best one to play, testing whether penalty cards have been played
+// in previous rounds, as well as determining whether someone has played a penalty
+// card before me in this round. All of these functions were fundamental in deciding
+// what card my program would choose to play, so ensuring they worked was essential.
 
 void run_unit_tests(void) {
     
